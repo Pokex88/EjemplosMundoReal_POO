@@ -1,0 +1,75 @@
+# Clase que representa una habitación de hotel
+class Habitacion:
+    def __init__(self, numero, tipo, precio):
+        self.numero = numero          # Número de habitación
+        self.tipo = tipo              # Tipo de habitación: sencilla
+        self.precio = precio          # Precio por noche
+        self.disponible = True        # Estado: disponible o reservada
+
+    def mostrar_info(self):
+        estado = "Disponible" if self.disponible else "Ocupada"
+        print(f"Habitación {self.numero} - Tipo: {self.tipo} - Precio: {self.precio} - Estado: {estado}")
+
+# Clase que representa un huésped
+class Huesped:
+    def __init__(self, nombre, cedula):
+        self.nombre = nombre
+        self.cedula = cedula
+
+# Clase que representa una reserva
+class Reserva:
+    def __init__(self, huesped, habitacion, noches):
+        self.huesped = huesped
+        self.habitacion = habitacion
+        self.noches = noches
+        self.total = habitacion.precio * noches
+        habitacion.disponible = False  # Marca la habitación como ocupada al reservar
+
+    def mostrar_reserva(self):
+        print(f"\nReserva para {self.huesped.nombre} (Cédula: {self.huesped.cedula})")
+        print(f"Habitación N° {self.habitacion.numero} - Tipo: {self.habitacion.tipo}")
+        print(f"Noches: {self.noches} - Total a pagar: ${self.total}")
+
+# Clase que representa el sistema de hotel
+class Hotel:
+    def __init__(self, nombre):
+        self.nombre = nombre
+        self.habitaciones = []  
+        self.reservas = []      
+
+    def agregar_habitacion(self, habitacion):
+        self.habitaciones.append(habitacion)
+
+    def mostrar_habitaciones_disponibles(self):
+        print(f"\nHabitaciones disponibles en {self.nombre}:")
+        for hab in self.habitaciones:
+            if hab.disponible:
+                hab.mostrar_info()
+
+    def reservar(self, cedula, nombre, numero_habitacion, noches):
+        huesped = Huesped(nombre, cedula)
+        for hab in self.habitaciones:
+            if hab.numero == numero_habitacion and hab.disponible:
+                reserva = Reserva(huesped, hab, noches)
+                self.reservas.append(reserva)
+                print("\n ¡Reserva realizada con éxito!")
+                reserva.mostrar_reserva()
+                return
+        print("\n La habitación no está disponible o no existe.")
+
+# Crear instancia del hotel
+mi_hotel = Hotel("Hotel Estrella del Mar")
+
+# Agregar habitaciones
+mi_hotel.agregar_habitacion(Habitacion(101, "Sencilla", 40))
+mi_hotel.agregar_habitacion(Habitacion(102, "Doble", 60))
+mi_hotel.agregar_habitacion(Habitacion(201, "Suite", 100))
+
+# Mostrar habitaciones disponibles
+mi_hotel.mostrar_habitaciones_disponibles()
+
+# Hacer una reserva
+mi_hotel.reservar(cedula="1756171474", nombre="jack peñaloza", numero_habitacion=102, noches=3)
+
+# Mostrar habitaciones disponibles después de la reserva
+mi_hotel.mostrar_habitaciones_disponibles()
